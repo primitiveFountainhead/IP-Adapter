@@ -84,6 +84,7 @@ def get_generator(seed, device):
 
     if seed is not None:
         if isinstance(seed, list) or isinstance(seed, np.ndarray):
+            print(seed)
             generator = [torch.Generator(device).manual_seed(int(seed_item)) for seed_item in seed]
         else:
             generator = torch.Generator(device).manual_seed(int(seed))
