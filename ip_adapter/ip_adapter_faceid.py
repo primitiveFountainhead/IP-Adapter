@@ -352,7 +352,8 @@ class IPAdapterFaceIDPlus:
         num_samples=4,
         seed=None,
         s_scale=1.0,
-        shortcut=False,):
+        shortcut=False,
+        generator = None):
         self.set_scale(scale)
 
        
@@ -386,8 +387,8 @@ class IPAdapterFaceIDPlus:
             )
             prompt_embeds = torch.cat([prompt_embeds_, image_prompt_embeds], dim=1)
             negative_prompt_embeds = torch.cat([negative_prompt_embeds_, uncond_image_prompt_embeds], dim=1)
-
-        generator = get_generator(seed, self.device)
+        if not generator:
+            generator = get_generator(seed, self.device)
         return prompt_embeds, negative_prompt_embeds, generator
     def generate(
         self,
@@ -402,13 +403,14 @@ class IPAdapterFaceIDPlus:
         num_inference_steps=30,
         s_scale=1.0,
         shortcut=False,
+        generator = None,
         **kwargs,
     ):
 
         prompt_embeds, negative_prompt_embeds, generator = self.get_things_to_generate(face_image=face_image,faceid_embeds=faceid_embeds,
                                                                                        prompt=prompt,negative_prompt=negative_prompt
                                                                                        ,scale=scale,num_samples=num_samples,seed=seed
-                                                                                       ,s_scale=s_scale,shortcut=shortcut,)
+                                                                                       ,s_scale=s_scale,shortcut=shortcut,generator = generator)
         images = self.pipe(
             prompt_embeds=prompt_embeds,
             negative_prompt_embeds=negative_prompt_embeds,
